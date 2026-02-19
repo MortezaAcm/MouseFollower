@@ -1,26 +1,38 @@
-const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext("2d");
+window.addEventListener("load", () => {
+  const canvas = document.querySelector("canvas");
+  const ctx = canvas.getContext("2d");
+  let radius = 50;
 
-canvas.width = document.documentElement.clientWidth;
-canvas.height = document.documentElement.clientHeight;
-ctx.fillStyle = "#2be271a6";
-ctx.filter = "blur(5px)";
+  const onResizeHandler = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.fillStyle = "#2be271a6";
+    ctx.filter = "blur(5px)";
+    radius = 30;
+  };
 
-document.body.addEventListener("mousemove", (e) => {
-  requestAnimationFrame(() => {
+  const drawing = (x, y) => {
+    ctx.beginPath();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.arc(x, y, radius, 0 * Math.PI, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+  };
+
+  const showCircle = (event) => {
     setTimeout(() => {
-      const { clientX, clientY } = e;
-      ctx.beginPath();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.arc(clientX, clientY, 50, 0 * Math.PI, 2 * Math.PI);
-      ctx.fill();
-      ctx.closePath();
+      if (event.clientX) {
+        const { clientX, clientY } = event;
+        drawing(clientX, clientY);
+      } else if (event.changedTouches) {
+        const { clientX, clientY } = event.changedTouches[0];
+        drawing(clientX, clientY);
+      }
     }, 100);
-  });
-});
-window.addEventListener("resize", () => {
-  canvas.width = document.documentElement.clientWidth;
-  canvas.height = document.documentElement.clientHeight;
-  ctx.fillStyle = "#2be271a6";
+  };
+
+  onResizeHandler();
+  document.body.addEventListener("mousemove", showCircle);
+  document.body.addEventListener("touchmove", showCircle);
+  window.addEventListener("resize", onResizeHandler);
 });
