@@ -4,8 +4,10 @@ window.addEventListener("load", () => {
   let radius = 50;
 
   const onResizeHandler = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const { offsetWidth, offsetHeight } = document.documentElement;
+    canvas.width = offsetWidth;
+    canvas.height = offsetHeight;
+
     ctx.fillStyle = "#2be271a6";
     ctx.filter = "blur(5px)";
     radius = 30;
@@ -20,15 +22,17 @@ window.addEventListener("load", () => {
   };
 
   const showCircle = (event) => {
-    setTimeout(() => {
-      if (event.clientX) {
-        const { clientX, clientY } = event;
-        drawing(clientX, clientY);
-      } else if (event.changedTouches) {
-        const { clientX, clientY } = event.changedTouches[0];
-        drawing(clientX, clientY);
-      }
-    }, 100);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        if (event.clientX) {
+          const { clientX, clientY } = event;
+          drawing(clientX, clientY);
+        } else if (event.changedTouches) {
+          const { clientX, clientY } = event.changedTouches[0];
+          drawing(clientX, clientY);
+        }
+      }, 120);
+    });
   };
 
   onResizeHandler();
